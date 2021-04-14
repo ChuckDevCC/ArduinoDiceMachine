@@ -1,11 +1,14 @@
 /*
-
-
+/ Carl Chuck Sandin
+/ April 2021
 */
+
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
-
+// these two libraries are installed for the
+// LCD and gives us functions to manipulate it.
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+
 /*//////////////////////////////////////////////////////////////////////*/
 // The 74HC595 micro-controller will be used as a shift register
 // to 'load dice' into our LED's, as the UNO has a small amount of
@@ -15,31 +18,25 @@ const int data = 2;
 const int clock = 3;
 const int latch = 4;
 /*//////////////////////////////////////////////////////////////////////*/
-//Pin declarations for input
+//Pin declarations for input.
 const int shiftButton = 5;
 const int submitButton = 8;
 const int potPin = 0;
 
-//Pins for the LED light
+//Pins for the RGB LED light.
 const int redPin = 11;
 const int greenPin = 10;
 const int bluePin = 9;
-
-// variables for the LED light color wheel.
-float hue = 0, s = 1, v = 1;
-float r, g, b;
-
 /*//////////////////////////////////////////////////////////////////////*/
 // This series of variables is to manipulate the shift register.
-// We have 6 LEDs so we use 3 bit arrays and 3 mask arrays to select
+// We have 6 LEDs so we use 2 bit arrays and 2 mask arrays to select
 // which LED is being used.
 int ledState = 0;
 int bits[] = {B000001, B000010, B000100, B001000, B010000, B100000};
 int masks[] = {B111110, B111101, B111011, B110111, B101111, B011111};
-
 /*//////////////////////////////////////////////////////////////////////*/
 // Arrays for all dice rolls. Since there are only 7 dice in a DnD set,
-// we only need an array of size 7.
+// we only need an array of size 7. roll Values has one extra for the total.
 
 int numDice[7];
 int diceType[7];
@@ -50,17 +47,22 @@ int rollValues[8];
 // global index that the functions can manipulate and store
 // the appropriate dice selections and rolls.
 int index = 0;
-// let's the program know it's time to calculate rolls.
-bool finish = false;
 
+// lets the program know it's time to calculate rolls.
+bool finish = false;
+//tells us if the user has run the program once already.
 bool initFlag = false;
 
 /*//////////////////////////////////////////////////////////////////////*/
 void setup()
 {
+  //boot up the LCD display.
   lcd.init();
   lcd.backlight();
 
+  // this block of declarations is essential
+  // for the pins to work. we map them 
+  // based on their input/output function.
   pinMode(data, OUTPUT);
   pinMode(clock, OUTPUT);
   pinMode(latch, OUTPUT);
@@ -70,12 +72,19 @@ void setup()
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
 
+  //turn off the RGB LED on start up.
   digitalWrite(redPin, LOW);
   digitalWrite(greenPin, LOW);
   digitalWrite(bluePin, LOW);
 
+  // This is for the dice roll to be as close
+  // to random as possible by pulling in a signal
+  // from an empty pin.
   randomSeed(analogRead(A1));
+  //turn LED's off on startup
   updateLEDs(0);
+
+  //Not essential, but good for debugging.
   Serial.begin(9600);
 
 
@@ -84,13 +93,15 @@ void setup()
 /*//////////////////////////////////////////////////////////////////////*/
 void loop()
 {
-
+  // Run until the user says they are done
+  // or we hit 7 dice loaded.
   while (finish == false &&  index < 7)
   {
-
+    // first time run, display a message.
     if (initFlag == false) {
       lcdInitMessage();
     }
+    
     diceAmount();
     diceSelect();
     modifiers();
@@ -101,6 +112,11 @@ void loop()
 }
 
 /*//////////////////////////////////////////////////////////////////////*/
+// This function is just to have a little lightshow if
+// the user rolls critical high or low. 
+// it uses the updateLED function and sends a binary string
+// to change the LED's. the 1 is the position in the LED row.
+
 void lightShow() {
 
   updateLEDs(B000001);
@@ -128,7 +144,8 @@ void lightShow() {
   delay(100);
   updateLEDs(B000001);
   delay(100);
-  
+
+  //after the light show, turn all of them off.
   for (int i = 0; i < 6; i++)
   {
     changeLED(i, LOW);
@@ -136,7 +153,10 @@ void lightShow() {
 
 }
 /*//////////////////////////////////////////////////////////////////////*/
+// this checks if the user is ready to roll again. If not, it will
+// simply display the total value until they are ready to continue.
 void lcdFinalMessage() {
+  
   int submitState = 0;
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -144,7 +164,7 @@ void lcdFinalMessage() {
   lcd.setCursor(0, 1);
   lcd.print("ROLL AGAIN?");
   delay(3000);
-
+  
   do {
     int potRead = analogRead(potPin);
     if (potRead > 512)
@@ -213,13 +233,21 @@ void rollAll() {
   int submitState = 0;
   int shiftState = 0;
 
+  // initial condition, or if it is only one die being rolled.
   if (index == 0)
   {
+    // pull the dice type.
     dieType = diceType[0];
+    // roll the defined amount by the user (i.e 2d6)
     for (int j = 0; j < numDice[0]; j++)
     {
+      // roll randomly between 1-x. plus 1 is needed for this function
+      // as it rolls from (x,y-1).
       eachRoll = random(1, (dieType + 1));
-
+      
+      // this conditional statement is for the critical failures and successes.
+      // makes a lightshow if it does.
+      
       if (eachRoll == 1)
       {
         lightShow();
@@ -248,7 +276,7 @@ void rollAll() {
       delay(2000);
 
 
-
+      // add the modifiers to each roll based on (p)lus or minus.
       if (modType[0] == 'p')
       {
         eachRoll += modNum[0];
@@ -261,10 +289,12 @@ void rollAll() {
 
       toStore += eachRoll;
     }
+    //store the total.
     rollValues[7] = toStore;
   }
   else
-  {
+  {//the structure will be a bit different
+    // with multiple dice rolls, hence the else.
     for (int i = 0; i <= index; i++)
     {
       Serial.println(index);
@@ -318,6 +348,8 @@ void rollAll() {
       grandTotal += toStore;
     }
     rollValues[7] = grandTotal;
+    // with all the values, we want the user to be able to see all values
+    // before continuing.
     for (int i = 0; i <= index; i++)
     {
       do {
@@ -340,6 +372,7 @@ void rollAll() {
       } while (shiftState == 0);
     }
   }
+  // wait for the user to say they want to continue.
   do {
 
     lcd.clear();
@@ -356,15 +389,18 @@ void rollAll() {
 
     if (digitalRead(submitButton) == HIGH)
     {
-
       submitState++;
     }
+    
   } while (submitState == 0);
+  
   digitalWrite(bluePin, LOW);
   digitalWrite(greenPin, LOW);
   digitalWrite(redPin, LOW);
 }
 /*//////////////////////////////////////////////////////////////////////*/
+// This function just simply asks if the user wants to roll more dice
+// before they  do the final roll.
 void rollAgain() {
 
   int submitState = 0;
@@ -420,6 +456,7 @@ void rollAgain() {
 }
 
 /*//////////////////////////////////////////////////////////////////////*/
+// the initial display message for the user to tell them the button positions.
 void lcdInitMessage() {
   int submitState = 0;
   lcd.setCursor(0, 0);
@@ -429,13 +466,16 @@ void lcdInitMessage() {
   delay(3000);
   lcd.clear();
 
+  
   do {
     lcd.setCursor(0, 0);
     lcd.print("PRESS SUBMIT");
     lcd.setCursor(0, 1);
     lcd.print("TO BEGIN");
+    // if button is pressed and reads 5V.
     if (digitalRead(submitButton) == HIGH)
     {
+      // init flag is now true to say the user has started.
       submitState++;
       initFlag = true;
       delay(250);
@@ -448,7 +488,6 @@ void lcdInitMessage() {
 /* this combines all the other functions - diceAmount(), diceSelect() -
     and uses them to select a modifier tree for the dice rolls.
     This means +X, -X where x is an integer, and applies to all dice rolls.
-
 */
 void modifiers() {
 
