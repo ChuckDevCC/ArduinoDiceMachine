@@ -30,7 +30,7 @@ Feel free when you are confident to change the code and design of the circuitry.
  [lcd]: <https://www.amazon.ca/gp/product/B07T8S3P1M/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1>
  [kit]: <https://solarbotics.com/product/ardx/>
 
-#Creating the Project
+# Creating the Project
 
 ## Uploading the Code
 
@@ -56,7 +56,9 @@ If everything is setup as documented here, you will get a little welcome message
 It will ask you to load the amount of dice. This is for one roll, such as 6 20-sided die. It has a maximum of six. Every time you press the button,
 it should light up the LED's sequentially. If something seems off, re-check the connections on the IC and the LED's. 
 Next we use the pontetiometer to adjust which dice we want to roll. It reads bit values between the ground and five volt connections, 
-and we use conditionals such as this one: 
+and we use conditionals such as this one:
+
+###
 <img src="https://imgur.com/L3Rh99O.jpg">
 
 to put these values to use. Once that is selected, we can use dice modifiers - a staple to any DnD game.
@@ -73,6 +75,9 @@ You will get a fun light show if you hit a critical failure or critical success 
 After all the rolls, you will get the total roll with the modifiers calculated afterwards. It will be stationary until you want to run again!
 
 
-# Function Logic and Explanations
->Need to add comments to the driver code before I show off :)
-
+# Current Limitations and Future Prospects
+- Some parts of the button presses are tricky time-wise. Either the button seems to not register, or if you press for too long it will skip over a function.
+This is because of the delay function - ```delay(250); ``` - and the summation of all of them in each function. 
+- As with the point above, the delay times could be uniform with a constant declaration which might help with the timing.
+- The overall rolling process is quite slow. This was more a passion project to see if it could be done. There is room for optimization, like any project!
+- Removing the potentiometer for a third button or another type of input would have a better quality of life. I used what I had with my kit, and enjoy it's aesthetics regardless.
