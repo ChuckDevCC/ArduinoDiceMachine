@@ -6,16 +6,16 @@ This is an academic project for the Winter 2021 Semester. If you wanted to delve
 These are the things you'll need!
 
 ### Software:
--[Arduino IDE][AIDE]
+- [Arduino IDE][AIDE]
 
 ### Hardware:
--Some sort of Arduino micro-board. I used the [Arduino Uno][uno] 
+- Some sort of Arduino micro-board. I used the [Arduino Uno][uno] 
 
--[LCD Display][lcd]
+- [LCD Display][lcd]
 
--Two breadboards with one being at least50 rows. This project can be a little large!
+- Two breadboards with one being at least 50 rows. This project can be a little large!
 
--Some sort of Arduino kit, such as [this one from SOLARBOTICS][kit] that includes at least 2 buttons, wires, a potentiometer and serial integrated circuit such as this 74HC595:
+- Some sort of Arduino kit, such as [this one from SOLARBOTICS][kit] that includes at least 2 buttons, wires, a potentiometer and serial integrated circuit such as this 74HC595:
 
 <img src="https://i.imgur.com/JsIZY13.jpg" width="200">
 
@@ -24,11 +24,6 @@ These are the things you'll need!
 Feel free when you are confident to change the code and design of the circuitry.
 
 
-
-[AIDE]: <https://www.arduino.cc/en/software>
- [uno]: <https://store.arduino.cc/usa/fundamentals-bundle>
- [lcd]: <https://www.amazon.ca/gp/product/B07T8S3P1M/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1>
- [kit]: <https://solarbotics.com/product/ardx/>
 
 # Creating the Project
 
@@ -47,7 +42,38 @@ And then your Arduino code is loaded on the board!
 
 ## Building the Circuitry
 
-> This part is A WIP, will be re-commited soon(tm)
+### LCD
+> Full build Picture
+The LCD is quite straight forward. The manual that comes with tells you where the 4 wires need to be charged. Once plugged in, flip the display over and turn the blue square dial to an appropriate brightness setting - It's set to max by default.
+> Dial picture
+
+### LED's and Shift Register
+
+
+This is under the assumption you have bought the same integrated circuit as listed earlier. If you did, place it on the edge of one of your breadboards, with the notch facing outwards. I have created a diagram using [Fritzing][fritzing] and a different IC to show you the wire structure. Explaining why all this works is beyond the scope of this readme, just enjoy some of the magic!
+
+<img src = "https://i.imgur.com/Jx6eMrS.png">
+
+### Buttons
+
+The buttons straddle between both sides of the breadboard. one side has the control pin and positive on one side, and a resistor on the otherside of the breadboard and button, on the same prong file as the control pin. It will look something like the diagram below.
+
+<img src = "https://imgur.com/94HTJIj.png">
+
+make sure you have two of these, and the submit button goes to pin 8, with the dice button going to pin 9.
+
+### Potentiometer
+
+The potentiometer will have 3 prongs. The middle one is the control pin, which will go to Analog pin A0. the other two will be both 5V and ground. Check your type of potentiometer and attach the wires as required!
+
+### RGB LED
+
+Like the potentiometer, this also depends on the type of LED you receive. This diagram is the common case, but double-check if your colors seem different!
+
+- Red : Pin 11
+ - Green : Pin 10
+ - Blue : Pin 9
+<img src = "https://imgur.com/PgLbUu6.png">
 
 # How to Use
 
@@ -81,3 +107,10 @@ This is because of the delay function - ```delay(250); ``` - and the summation o
 - As with the point above, the delay times could be uniform with a constant declaration which might help with the timing.
 - The overall rolling process is quite slow. This was more a passion project to see if it could be done. There is room for optimization, like any project!
 - Removing the potentiometer for a third button or another type of input would have a better quality of life. I used what I had with my kit, and enjoy it's aesthetics regardless.
+
+
+[AIDE]: <https://www.arduino.cc/en/software>
+ [uno]: <https://store.arduino.cc/usa/fundamentals-bundle>
+ [lcd]: <https://www.amazon.ca/gp/product/B07T8S3P1M/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1>
+ [kit]: <https://solarbotics.com/product/ardx/>
+[fritzing]: <https://github.com/fritzing/fritzing-app/releases/tag/CD-548>
