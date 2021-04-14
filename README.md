@@ -46,6 +46,8 @@ And then your Arduino code is loaded on the board!
 ### LCD
 
 The LCD is quite straight forward. The manual that comes with tells you where the 4 wires need to be charged. Once plugged in, flip the display over and turn the blue square dial to an appropriate brightness setting - It's set to max by default.
+
+
 <img src = "https://imgur.com/Jymcfkr.png" width="300">
 
 ### LED's and Shift Register
@@ -104,7 +106,7 @@ After all the rolls, you will get the total roll with the modifiers calculated a
 
 # Current Limitations and Future Prospects
 - Some parts of the button presses are tricky time-wise. Either the button seems to not register, or if you press for too long it will skip over a function.
-This is because of the delay function - ```delay(250); ``` - and the summation of all of them in each function. 
+This is because of the delay function - ```delay(250);``` - and the summation of all of them in each function. 
 - As with the point above, the delay times could be uniform with a constant declaration which might help with the timing.
 - The overall rolling process is quite slow. This was more a passion project to see if it could be done. There is room for optimization, like any project!
 - Removing the potentiometer for a third button or another type of input would have a better quality of life. I used what I had with my kit, and enjoy it's aesthetics regardless.
