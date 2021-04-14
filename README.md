@@ -41,11 +41,12 @@ With all your parts shipped and in, plug your Arduino board into your computer, 
 And then your Arduino code is loaded on the board!
 
 ## Building the Circuitry
+<img src = "https://imgur.com/2PvOuSE.png">
 
 ### LCD
-> Full build Picture
+
 The LCD is quite straight forward. The manual that comes with tells you where the 4 wires need to be charged. Once plugged in, flip the display over and turn the blue square dial to an appropriate brightness setting - It's set to max by default.
-> Dial picture
+<img src = "https://imgur.com/Jymcfkr.png" width="300">
 
 ### LED's and Shift Register
 
